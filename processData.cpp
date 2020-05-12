@@ -723,7 +723,7 @@ int ProcessData::marubozu(const string *sp, const int n)
 					if (((abs(ptr2->data.OP - ptr2->data.LP) < EPS) && (abs(ptr2->data.CP - ptr2->data.HP) < EPS) && ((abs(ptr2->data.OP - ptr2->data.CP) - 0.5 * PIP) > EPS)) || ((abs(ptr2->data.OP - ptr2->data.HP) < EPS) && (abs(ptr2->data.CP - ptr2->data.LP) < EPS) && ((abs(ptr2->data.OP - ptr2->data.CP) - 0.5 * PIP) > EPS)))
 					{
 						count_MB++;
-						cout << "MB Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
+						// cout << "MB Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 					}
 				}
 				ptr2 = ptr2->link;
@@ -770,6 +770,10 @@ int ProcessData::doji(const string *sp, const int n)
 			{
 				TIME_A = stol(sp[3]);
 				TIME_B = stol(sp[4]);
+				if (TIME_A > TIME_B)
+				{
+					return -1;
+				}
 			}
 			else
 			{
@@ -798,7 +802,8 @@ int ProcessData::doji(const string *sp, const int n)
 				{
 					if (ptr2->data.TIME >= TIME_A && ptr2->data.TIME <= TIME_B)
 					{
-						if (abs(ptr2->data.OP - ptr2->data.CP) <= 0.2 * PIP)
+						// if (abs(ptr2->data.OP - ptr2->data.CP) <= 0.2 * PIP)
+						if ((abs(ptr2->data.OP - ptr2->data.CP) - 0.2 * PIP) < EPS)
 						{
 							count_DJ++;
 							//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
@@ -834,6 +839,10 @@ int ProcessData::doji(const string *sp, const int n)
 			if (isInteger(sp[4]))
 			{
 				TIME_A = TIME_B = stol(sp[4]);
+				if (TIME_A > TIME_B)
+				{
+					return -1;
+				}
 			}
 			else
 			{
@@ -877,35 +886,37 @@ int ProcessData::doji(const string *sp, const int n)
 					if (ptr2->data.TIME >= TIME_A && ptr2->data.TIME <= TIME_B)
 					{
 						// Nếu là nến DOJI
-						if (abs(ptr2->data.OP - ptr2->data.CP) <= 0.2 * PIP)
+						if ((abs(ptr2->data.OP - ptr2->data.CP) - 0.2 * PIP) < EPS)
 						{
 							switch (s_mapDoji[sp[3]])
 							{
 							case C1:
-								if (ptr2->data.HP - ptr2->data.OP > 0.5 * PIP && ptr2->data.HP - ptr2->data.CP > 0.5 * PIP &&
-									ptr2->data.OP - ptr2->data.LP > 0.5 * PIP && ptr2->data.CP - ptr2->data.LP > 0.5 * PIP)
+								if (((ptr2->data.HP - ptr2->data.OP) - 0.5 * PIP) > EPS && ((ptr2->data.HP - ptr2->data.CP) - 0.5 * PIP) > EPS &&
+									((ptr2->data.OP - ptr2->data.LP) - 0.5 * PIP) > EPS && ((ptr2->data.CP - ptr2->data.LP) - 0.5 * PIP) > EPS)
 								{
 									count_DJ++;
 									//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 								}
 								break;
 							case C2:
-								if (((ptr2->data.HP == ptr2->data.OP) || (ptr2->data.HP == ptr2->data.CP)) &&
-									(ptr2->data.OP - ptr2->data.LP > 0.5 * PIP && ptr2->data.CP - ptr2->data.LP > 0.5 * PIP))
+								if ((abs(ptr2->data.HP - ptr2->data.OP) < EPS && (ptr2->data.CP - ptr2->data.LP - 0.5 * PIP) > EPS) ||
+									(((ptr2->data.OP - ptr2->data.LP - 0.5 * PIP) > EPS) && (abs(ptr2->data.HP - ptr2->data.CP) < EPS)))
 								{
 									count_DJ++;
 									//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 								}
 								break;
 							case C3:
-								if (ptr2->data.LP == min(ptr2->data.CP, ptr2->data.OP) && (ptr2->data.HP - min(ptr2->data.CP, ptr2->data.OP) > 0.5 * PIP))
+								// if ((ptr2->data.LP - min(ptr2->data.CP, ptr2->data.OP)) < EPS && ((ptr2->data.HP - min(ptr2->data.CP, ptr2->data.OP) - 0.5 * PIP)) > EPS)
+								if ((abs(ptr2->data.LP - ptr2->data.OP) < EPS && (ptr2->data.HP - ptr2->data.CP - 0.5 * PIP) > EPS) ||
+									(((ptr2->data.HP - ptr2->data.OP - 0.5 * PIP) > EPS) && (abs(ptr2->data.LP - ptr2->data.CP) < EPS)))
 								{
 									count_DJ++;
 									//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 								}
 								break;
 							case C4:
-								if (ptr2->data.OP == ptr2->data.CP && ptr2->data.OP == ptr2->data.HP && ptr2->data.OP == ptr2->data.LP)
+								if (abs(ptr2->data.OP - ptr2->data.CP) < EPS && abs(ptr2->data.OP - ptr2->data.HP) < EPS && abs(ptr2->data.OP - ptr2->data.LP) < EPS)
 								{
 									count_DJ++;
 									//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
