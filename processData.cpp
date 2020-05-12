@@ -638,7 +638,9 @@ int ProcessData::spinningTop(const string *sp, const int n)
 				{
 					// Check xem có phải nến Spinning Top lên
 					// if ((ptr2->data.HP - ptr2->data.CP > 0.00005) && (ptr2->data.CP - ptr2->data.OP >= 0) && (ptr2->data.CP - ptr2->data.OP <= 0.00005) && (ptr2->data.OP - ptr2->data.LP > 0.00005))
-					if (((ptr2->data.HP - max(ptr2->data.OP, ptr2->data.CP)) > 0.5 * PIP) && ((min(ptr2->data.OP, ptr2->data.CP) - ptr2->data.LP) > 0.5 * PIP) && (abs(ptr2->data.OP - ptr2->data.CP) <= 0.5 * PIP))
+					// OP > CP
+					if (((ptr2->data.HP - ptr2->data.OP - 0.5 * PIP) > EPS && (ptr2->data.CP - ptr2->data.LP - 0.5 * PIP) > EPS && (abs(ptr2->data.OP - ptr2->data.CP) < EPS || (ptr2->data.OP - ptr2->data.CP) > EPS) && ((ptr2->data.OP - ptr2->data.CP - 0.5 * PIP) < EPS || abs(ptr2->data.OP - ptr2->data.CP - 0.5 * PIP) < EPS)) ||
+						((ptr2->data.HP - ptr2->data.CP - 0.5 * PIP) > EPS && (ptr2->data.OP - ptr2->data.LP - 0.5 * PIP) > EPS && (abs(ptr2->data.CP - ptr2->data.OP) < EPS || (ptr2->data.CP - ptr2->data.OP) > EPS) && ((ptr2->data.CP - ptr2->data.OP - 0.5 * PIP) < EPS || abs(ptr2->data.CP - ptr2->data.OP - 0.5 * PIP) < EPS)))
 					{
 						count_ST++;
 						//cout << "ST Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
