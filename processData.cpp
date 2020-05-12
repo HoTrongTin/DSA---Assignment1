@@ -102,7 +102,8 @@ ProcessData::~ProcessData()
 		{
 			//cout << "Deleted Exchange: " << ptr1->data.BC << " " << ptr1->data.QC << "\n";
 			Node<Exchange> *temp1 = ptr1; // ptr1 Dùng để traverse outer LinkedList
-			ptr1 = data->head = ptr1->link;
+			data->head = ptr1->link;
+			ptr1 = data->head;
 			delete temp1;
 
 			continue;
@@ -110,7 +111,8 @@ ProcessData::~ProcessData()
 
 		//cout << "Delete Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 		Node<Candle> *temp2 = ptr2;
-		ptr1->data.details->head = ptr2 = ptr2->link;
+		ptr1->data.details->head = ptr2->link;
+		ptr2 = ptr2->link;
 		ptr1->data.details->count--; // Giảm số lượng nến xuống 1
 		delete temp2;
 		goto repeat4;
@@ -149,6 +151,7 @@ int ProcessData::process(string line)
 		//cout << p[i] << "|";
 		if (p[i] == "")
 		{
+			delete[] p;
 			return -1;
 		}
 	}
@@ -308,25 +311,25 @@ int ProcessData::insert(const string *sp, const int n)
 }
 
 // Show All Candles
-void ProcessData::printAllCandle()
-{
-	Node<Exchange> *ptr1; // ptr1 Dùng để traverse outer LinkedList
-	ptr1 = data->head;
+// void ProcessData::printAllCandle()
+// {
+// 	Node<Exchange> *ptr1; // ptr1 Dùng để traverse outer LinkedList
+// 	ptr1 = data->head;
 
-	while (ptr1 != nullptr)
-	{
-		Node<Candle> *ptr2; // ptr2 Dùng để traverse inner LinkedList
-		ptr2 = ptr1->data.details->head;
+// 	while (ptr1 != nullptr)
+// 	{
+// 		Node<Candle> *ptr2; // ptr2 Dùng để traverse inner LinkedList
+// 		ptr2 = ptr1->data.details->head;
 
-		while (ptr2 != nullptr)
-		{
-			//cout << "Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << endl;
-			ptr2 = ptr2->link;
-		}
-		ptr1 = ptr1->link;
-	}
-	//cout << '\n';
-}
+// 		while (ptr2 != nullptr)
+// 		{
+// 			//cout << "Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << endl;
+// 			ptr2 = ptr2->link;
+// 		}
+// 		ptr1 = ptr1->link;
+// 	}
+// 	//cout << '\n';
+// }
 
 int ProcessData::deleteCandle(const string *sp, const int n)
 {
