@@ -1,6 +1,7 @@
 #include "processData.h"
 // #define MIN(a, b) (((a) < (b)) ? (a) : (b))
 // #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define EPS 0.000001
 float PIP = 0.0001;
 
 enum CodeValue
@@ -350,6 +351,10 @@ int ProcessData::deleteCandle(const string *sp, const int n)
 		{
 			return -1;
 		}
+		if (stol(sp[3]) > stol(sp[4]))
+		{
+			return -1;
+		}
 
 		while (ptr1 != nullptr)
 		{
@@ -671,6 +676,10 @@ int ProcessData::marubozu(const string *sp, const int n)
 		{
 			TIME_A = stol(sp[3]);
 			TIME_B = stol(sp[4]);
+			if (TIME_A > TIME_B)
+			{
+				return -1;
+			}
 		}
 		else
 		{
@@ -711,10 +720,10 @@ int ProcessData::marubozu(const string *sp, const int n)
 			{
 				if (ptr2->data.TIME >= TIME_A && ptr2->data.TIME <= TIME_B)
 				{
-					if (((ptr2->data.OP == ptr2->data.LP) && (ptr2->data.CP == ptr2->data.HP) && (abs(ptr2->data.OP - ptr2->data.CP) > 0.5 * PIP)) || ((ptr2->data.OP == ptr2->data.HP) && (ptr2->data.CP == ptr2->data.LP) && (abs(ptr2->data.OP - ptr2->data.CP) > 0.5 * PIP)))
+					if (((abs(ptr2->data.OP - ptr2->data.LP) < EPS) && (abs(ptr2->data.CP - ptr2->data.HP) < EPS) && ((abs(ptr2->data.OP - ptr2->data.CP) - 0.5 * PIP) > EPS)) || ((abs(ptr2->data.OP - ptr2->data.HP) < EPS) && (abs(ptr2->data.CP - ptr2->data.LP) < EPS) && ((abs(ptr2->data.OP - ptr2->data.CP) - 0.5 * PIP) > EPS)))
 					{
 						count_MB++;
-						//cout << "MB Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
+						cout << "MB Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 					}
 				}
 				ptr2 = ptr2->link;
