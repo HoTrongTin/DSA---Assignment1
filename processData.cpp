@@ -976,6 +976,10 @@ int ProcessData::engulfing(const string *sp, const int n)
 			{
 				TIME_A = stol(sp[3]);
 				TIME_B = stol(sp[4]);
+				if (TIME_A > TIME_B)
+				{
+					return -1;
+				}
 			}
 			else
 			{
@@ -1005,8 +1009,8 @@ int ProcessData::engulfing(const string *sp, const int n)
 					if (ptr2->data.TIME >= TIME_A && ptr2->data.TIME <= TIME_B)
 					{
 						// Nến nhấn chìm tăng (nến giảm sau đó là nến tăng)
-						if (((ptr2->data.OP >= ptr2->data.CP) && (ptr2->link->data.OP < ptr2->link->data.CP) && (ptr2->data.CP > ptr2->link->data.OP && ptr2->data.OP < ptr2->link->data.CP)) ||
-							((ptr2->data.OP <= ptr2->data.CP) && (ptr2->link->data.OP > ptr2->link->data.CP) && (ptr2->data.CP < ptr2->link->data.OP && ptr2->data.OP > ptr2->link->data.CP)))
+						if ((((ptr2->data.OP > ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP < ptr2->link->data.CP) && (ptr2->data.CP > ptr2->link->data.OP && ptr2->data.OP < ptr2->link->data.CP)) ||
+							(((ptr2->data.OP < ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP > ptr2->link->data.CP) && (ptr2->data.CP < ptr2->link->data.OP && ptr2->data.OP > ptr2->link->data.CP)))
 						{
 							count_EG++;
 							//cout << "EG Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
@@ -1054,6 +1058,10 @@ int ProcessData::engulfing(const string *sp, const int n)
 			{
 				TIME_A = stol(sp[4]);
 				TIME_B = stol(sp[5]);
+				if (TIME_A > TIME_B)
+				{
+					return -1;
+				}
 			}
 			else
 			{
@@ -1089,14 +1097,14 @@ int ProcessData::engulfing(const string *sp, const int n)
 						switch (s_mapDoji[sp[3]])
 						{
 						case C1:
-							if ((ptr2->data.OP >= ptr2->data.CP) && (ptr2->link->data.OP < ptr2->link->data.CP) && (ptr2->data.CP > ptr2->link->data.OP && ptr2->data.OP < ptr2->link->data.CP))
+							if (((ptr2->data.OP > ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP < ptr2->link->data.CP) && (ptr2->data.CP > ptr2->link->data.OP && ptr2->data.OP < ptr2->link->data.CP))
 							{
 								count_EG++;
 								//cout << "EG Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 							}
 							break;
 						case C2:
-							if ((ptr2->data.OP <= ptr2->data.CP) && (ptr2->link->data.OP > ptr2->link->data.CP) && (ptr2->data.CP < ptr2->link->data.OP && ptr2->data.OP > ptr2->link->data.CP))
+							if (((ptr2->data.OP < ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP > ptr2->link->data.CP) && (ptr2->data.CP < ptr2->link->data.OP && ptr2->data.OP > ptr2->link->data.CP))
 							{
 								count_EG++;
 								//cout << "EG Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
