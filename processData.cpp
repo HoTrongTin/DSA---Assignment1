@@ -104,6 +104,7 @@ ProcessData::~ProcessData()
 			Node<Exchange> *temp1 = ptr1; // ptr1 Dùng để traverse outer LinkedList
 			data->head = ptr1->link;
 			ptr1 = data->head;
+			delete temp1->data.details;
 			delete temp1;
 
 			continue;
@@ -900,7 +901,7 @@ int ProcessData::doji(const string *sp, const int n)
 									((ptr2->data.OP - ptr2->data.LP) - 0.5 * PIP) > EPS && ((ptr2->data.CP - ptr2->data.LP) - 0.5 * PIP) > EPS)
 								{
 									count_DJ++;
-									//cout << "DJ Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
+									//cout << "DJ C1: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 								}
 								break;
 							case C2:
@@ -1103,14 +1104,14 @@ int ProcessData::engulfing(const string *sp, const int n)
 							if (((ptr2->data.OP > ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP < ptr2->link->data.CP) && (ptr2->data.CP > ptr2->link->data.OP && ptr2->data.OP < ptr2->link->data.CP))
 							{
 								count_EG++;
-								//cout << "EG Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
+								//cout << "EG C1: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 							}
 							break;
 						case C2:
 							if (((ptr2->data.OP < ptr2->data.CP) || abs(ptr2->data.OP - ptr2->data.CP) < EPS) && (ptr2->link->data.OP > ptr2->link->data.CP) && (ptr2->data.CP < ptr2->link->data.OP && ptr2->data.OP > ptr2->link->data.CP))
 							{
 								count_EG++;
-								//cout << "EG Candle: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
+								//cout << "EG C2: " << ptr1->data.BC << " " << ptr1->data.QC << " " << ptr2->data.TIME << " " << ptr2->data.OP << " " << ptr2->data.HP << " " << ptr2->data.LP << " " << ptr2->data.CP << "\n\n";
 							}
 							break;
 						default:
